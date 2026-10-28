@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introdução ao JavaScript</title>
+    <style>
+        /* Define as cores reutilizadas em toda a página. */
+        :root {
+            --primaria: #2563eb;
+            --primaria-escura: #1d4ed8;
+            --texto: #1e293b;
+            --fundo: #eff6ff;
+            --borda: #cbd5e1;
+        }
+
+        /* Inclui bordas e espaçamentos no tamanho total dos elementos. */
+        * { box-sizing: border-box; }
+
+        /* Centraliza o conteúdo e aplica o fundo inicial da página. */
+        body {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            color: var(--texto);
+            background: linear-gradient(135deg, #dbeafe, var(--fundo));
+            font: 1rem/1.5 Arial, sans-serif;
+        }
+        /* Estiliza o título principal. */
+        h1 {
+            margin: 0 0 1.5rem;
+            color: #1e3a8a;
+            text-align: center;
+        }
+        /* Cria cartões visuais para os campos e grupos de opções. */
+        .campo, fieldset {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, .9);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, .08);
+        }
+        .campo label, fieldset label { display: block; margin-bottom: .4rem; font-weight: 600; }
+        /* Padroniza a aparência dos campos de entrada e da lista. */
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: .7rem;
+            color: var(--texto);
+            background: #fff;
+            border: 2px solid var(--borda);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        /* Destaca o campo que está recebendo a atenção do usuário. */
+        input:focus, select:focus { outline: 2px solid #93c5fd; border-color: var(--primaria); }
+        legend { padding: 0 .4rem; color: #000208; font-weight: 700; }
+        fieldset label { font-weight: normal; }
+        input[type="checkbox"] { accent-color: var(--primaria); }
+        /* Organiza os botões principais lado a lado. */
+        .acoes { display: flex; gap: .75rem; margin-top: 1.25rem; }
+        button {
+            flex: 1;
+            padding: .75rem 1rem;
+            color: #fff;
+            background: var(--primaria);
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background .2s, transform .2s;
+        }
+        button:hover { background: var(--primaria-escura); transform: translateY(-2px); }
+        #btnLimpar { color: #1e40af; background: #bfdbfe; }
+        #btnLimpar:hover { background: #93c5fd; }
+        /* Área onde os dados preenchidos serão exibidos. */
+        #resultadoTodosDados {
+            min-height: 2rem;
+            margin-top: 1.25rem;
+            padding: 1rem;
+            color: #1e3a8a;
+            background: #dbeafe;
+            border-left: 5px solid var(--primaria);
+            border-radius: 8px;
+        }
+        #btnFundo {
+            display: block;
+            width: fit-content;
+            margin: 1rem auto 0;
+            padding: .35rem .6rem;
+            flex: none;
+            font-size: .75rem;
+        }
+        /*animar  caracteres. */
+        .letra { display: inline-block; transition: color .2s ease; }
+        .letra:hover { color: var(--primaria); animation: pular-letra .5s ease; }
+        /* Adapta os botões. */
+        @media (max-width: 480px) {
+            body { padding: 1.25rem .75rem; }
+            .acoes { flex-direction: column; }
+        }
+        @keyframes pular-letra {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            35% { transform: translateY(-.3em) rotate(-6deg); }
+            70% { transform: translateY(.08em) rotate(5deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Título da atividade. -->
+    <h1>Introdução ao JavaScript</h1>
+
+    <!-- Campo para receber o nome do participante. -->
+    <div class="campo">
+        <label for="nome">Digite o seu nome:</label>
+        <input type="text" id="nome">
+    </div>
+    <!-- Campo numérico para receber a idade. -->
+    <div class="campo">
+        <label for="idade">Digite a sua idade:</label>
+        <input type="number" id="idade">
+    </div>
+
+    <!-- Lista de cursos disponíveis. -->
+    <fieldset>
+        <legend>Escolha o curso de programação:</legend>
+        <label for="curso">Curso:</label>
+        <select id="curso" name="curso">
+            <option value="">Selecione um curso</option>
+            <option value="oficina-javascript">Oficina de JavaScript</option>
+            <option value="oficina-python">Oficina de Python</option>
+            <option value="oficina-html-css">Oficina de HTML e CSS</option>
+            <option value="oficina-banco-de-dados">Oficina de Banco de Dados</option>
+        </select>
+    </fieldset>
+
+    <!-- Opções de turno que podem ser selecionadas. -->
+    <fieldset>
+        <legend>Escolha o(s) turno(s):</legend>
+        <label><input type="checkbox" name="turno" value="manha"> Manhã</label><br>
+        <label><input type="checkbox" name="turno" value="tarde"> Tarde</label><br>
+        <label><input type="checkbox" name="turno" value="noite"> Noite</label>
+    </fieldset>
+
+    <!-- Ações para exibir ou apagar os dados preenchidos. -->
+    <div class="acoes">
+        <button id="btnMostrarTodos" type="button">Mostrar todos os dados</button>
+        <button id="btnLimpar" type="button">Limpar</button>
+    </div>
+    <!-- Resultado atualizado pelo JavaScript. -->
+    <p id="resultadoTodosDados" aria-live="polite"></p>
+    <button id="btnFundo" type="button">Trocar fundo</button>
+    <input id="imagemFundo" type="file" accept="image/*" hidden>
+
+    <script>
+        // Obtém referências aos campos e elementos usados pela página.
+        const nomeInput = document.querySelector('#nome');
+        const idadeInput = document.querySelector('#idade');
+        const curso = document.querySelector('#curso');
+        const resultado = document.querySelector('#resultadoTodosDados');
+        const turnos = document.querySelectorAll('input[name="turno"]');
+        const btnFundo = document.querySelector('#btnFundo');
+        const imagemFundo = document.querySelector('#imagemFundo');
+
+        // Lê os valores atuais do formulário e fornece textos padrão quando necessário.
+        function obterDados() {
+            const nome = nomeInput.value.trim() || 'Não informado';
+            const idade = idadeInput.value.trim() || 'Não informada';
+            const cursoSelecionado = curso.options[curso.selectedIndex].text;
+            const turnosSelecionados = [...turnos]
+                .filter(turno => turno.checked)
+                .map(turno => turno.parentElement.textContent.trim())
+                .join(', ') || 'Não informado';
+
+            return { nome, idade, cursoSelecionado, turnos: turnosSelecionados };
+        }
+
+        // Mostra no resultado todos os dados informados pelo usuário.
+        function mostrarDados() {
+            const dados = obterDados();
+
+            resultado.innerHTML = `
+                <strong>Todos os dados:</strong><br>
+                Nome: ${dados.nome}<br>
+                Idade: ${dados.idade}<br>
+                Curso: ${dados.cursoSelecionado}<br>
+                Turno(s): ${dados.turnos}
+            `;
+            animarLetras(resultado);
+        }
+
+        // Envolve cada caractere de texto em um span para aplicar o efeito de animação.
+        function animarLetras(elemento = document.body) {
+            const walker = document.createTreeWalker(elemento, NodeFilter.SHOW_TEXT);
+            const textos = [];
+            let no;
+
+            while ((no = walker.nextNode())) {
+                const textoVisivel = no.nodeValue.trim();
+                const elementoIgnorado = no.parentElement.closest('.letra, script, style');
+
+                if (!elementoIgnorado && textoVisivel) {
+                    textos.push(no);
+                }
+            }
+
+            textos.forEach(no => {
+                const fragmento = document.createDocumentFragment();
+
+                [...no.nodeValue].forEach(caractere => {
+                    if (/\s/.test(caractere)) fragmento.append(caractere);
+                    else {
+                        const letra = document.createElement('span');
+                        letra.className = 'letra';
+                        letra.textContent = caractere;
+                        fragmento.append(letra);
+                    }
+                });
+                no.replaceWith(fragmento);
+            });
+        }
+
+        // Ativa a animação.
+        animarLetras();
+        document.querySelector('#btnMostrarTodos').addEventListener('click', mostrarDados);
+        // Limpa todos os campos e remove o resultado exibido.
+        document.querySelector('#btnLimpar').addEventListener('click', () => {
+            nomeInput.value = idadeInput.value = '';
+            curso.value = '';
+            turnos.forEach(turno => turno.checked = false);
+            resultado.textContent = '';
+        });
+
+        // Abre o seletor de arquivos quando o botão de fundo é pressionado.
+        btnFundo.addEventListener('click', () => imagemFundo.click());
+        imagemFundo.addEventListener('change', () => {
+            const arquivo = imagemFundo.files[0];
+            if (arquivo) {
+            // Usa a imagem escolhida pelo usuário como fundo da página.
+                document.body.style.backgroundImage = `url(${URL.createObjectURL(arquivo)})`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundAttachment = 'fixed';
+            }
+        });
+
+        // Atualiza o resultado automaticamente sempre que um campo for alterado.
+        [nomeInput, idadeInput, curso, ...turnos].forEach(campo => {
+            const evento = campo.type === 'checkbox' || campo.tagName === 'SELECT' ? 'change' : 'input';
+            campo.addEventListener(evento, mostrarDados);
+        });
+    </script>
+</body>
+</html>
